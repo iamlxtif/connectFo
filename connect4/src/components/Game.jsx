@@ -54,7 +54,7 @@ function Game() {
   }, [Running, timeLeft]);
 
   const handleTurnEnd = () => {
-    const messages = ["Time's up!", "Out of time!", "Hurry up!"];
+    const messages = ["Time's up!", "Out of time!"];
     alert(messages[Math.floor(Math.random() * messages.length)]);
     setPlayer(player === "X" ? "O" : "X");
   };
