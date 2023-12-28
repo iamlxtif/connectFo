@@ -1,3 +1,4 @@
+import React from 'react';
 import { Grid, Typography, Box } from "@mui/material";
 import { Link } from "react-router-dom";
 import "../fonts/fonts.css";
