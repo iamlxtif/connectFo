@@ -5,9 +5,8 @@ from game_logic import *
 from flask_cors import CORS
 
 app = Flask(__name__)
-socketio = SocketIO(app)
 CORS(app)
-sio = socketio.server(cors_allowed_origins='*')
+socketio = SocketIO(app, cors_allowed_origins='*')
 
 @app.route('/')
 def home():
