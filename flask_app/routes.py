@@ -1,16 +1,16 @@
-from flask import Flask, render_template , request
+from flask import Flask, render_template , request, send_from_directory
 from flask_socketio import SocketIO
 from flask_socketio import send, emit
 from game_logic import *
 from flask_cors import CORS
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="templates", static_url_path="/")
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins='*')
 
-@app.route('/')
-def home():
-    return render_template('home.html')
+@app.route("/")
+def index():
+    return app.send_static_file("index.html")
 
 @app.route('/play', methods=['POST'])
 def play():
