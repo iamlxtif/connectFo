@@ -117,7 +117,7 @@ function Game(props) {
       returned: false,
     };
     setResponse(newResponse);
-    setPlayer(1);
+    setPlayer(props.player);
     setTimeLeft(30);
     setRunning(false);
     setshowStart(true);
