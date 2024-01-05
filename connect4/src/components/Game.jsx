@@ -26,15 +26,17 @@ function Game(props) {
   const [showStart, setshowStart] = useState(true);
 
   useEffect(() => {
-    props.socket.on("response", (data) => {
-      const newResponse = {
-        gameState: data.GameState,
-        board: data.board,
-        returned: true,
-      };
-      setResponse(newResponse);
-      console.log("response : ");
-    });
+    if (response.returned) {
+      props.socket.on("response", (data) => {
+        const newResponse = {
+          gameState: data.GameState,
+          board: data.board,
+          returned: true,
+        };
+        setResponse(newResponse);
+        console.log("response : ");
+      });
+    }
   }, [props.socket]);
 
   useEffect(() => {
@@ -52,8 +54,8 @@ function Game(props) {
         stopTimer();
         return;
       }
-      console.log("Updated board:", response.board);
-      setPlayer(player === 1 ? -1 : 1);
+      //console.log("Updated board:", response.board);
+      setPlayer(player*-1);
     }
   }, [response]);
 
@@ -72,17 +74,11 @@ function Game(props) {
         returned: false,
       };
       setResponse(newResponse);
-      if (player === -1 && mode === 1 && Running) {
+      if ((mode === 2 || (mode === 1 && player === -1 )) && Running) {
         handleAiMove();
-      } else if (mode === 2 && Running) handleAiMove();
+      }
     }
   }, [timeLeft]);
-
-  const delay = (milliseconds) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, milliseconds);
-    });
-  };
 
   const handleMove = (col) => {
     if (mode === 1 && player === 1 && props.socket && Running) {
@@ -99,7 +95,7 @@ function Game(props) {
 
   const handleAiMove = async () => {
     if (props.socket) {
-      await delay(2000);
+      await delay(1000);
       console.log("bot use board:", response.board);
       props.socket.emit("play_event", {
         board: response.board,
@@ -109,7 +105,18 @@ function Game(props) {
       });
     }
   };
-
+  const Start = () =>{
+    if (mode === 2) {
+      handleAiMove();
+    } else if (player === -1) handleAiMove();
+      setshowStart(false);
+      setRunning(true);
+  }
+  const delay = (milliseconds) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, milliseconds);
+    });
+  };
   const restart = () => {
     const newResponse = {
       gameState: 0,
@@ -128,7 +135,7 @@ function Game(props) {
   const startTimer = () => {
     setRunning(true);
   };
-  useEffect(() => {
+  useEffect(() => { // Timer inc and time out
     if (Running) {
       if (timeLeft > 0) {
         const timer = setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
@@ -142,10 +149,6 @@ function Game(props) {
   const handleTurnEnd = () => {
     const messages = ["Time's up!", "Out of time!"];
     alert(messages[Math.floor(Math.random() * messages.length)]);
-    // ab3t request l flask timeout_event
-    // update
-    // check gameState
-    // send bot request
     if (props.socket) {
       props.socket.emit("timeout_event", {
         board: response.board,
@@ -188,13 +191,7 @@ function Game(props) {
                 width: { md: "9rem", sm: "8rem", xs: "6rem" },
                 height: { md: "3.5rem", sm: "3rem", xs: "2.6rem" },
               }}
-              onClick={() => {
-                if (mode === 2) {
-                  handleAiMove();
-                } else if (player === -1) handleAiMove();
-                setshowStart(false);
-                setRunning(true);
-              }}
+              onClick={() => {Start()}}
             >
               <PlayArrowIcon fontSize="medium" />
               <Typography

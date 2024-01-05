@@ -14,7 +14,7 @@ def play(data):
     request_data = data
     
     if not request_data:
-        socketio.emit('response', {"error": "No data provided"}, 400)
+        socketio.emit('response', {"error": "No data provided"})
         return
 
     board = request_data.get("board")
@@ -23,7 +23,7 @@ def play(data):
     play_col = request_data.get("play_col")
     
     if board is None or turn is None or mode is None or play_col is None:
-        socketio.emit('response', {"error": "Invalid data format"}, 400)
+        socketio.emit('response', {"error": "Invalid data format"})
         return
     
     state = ConnectFourBoard(board)
@@ -51,14 +51,14 @@ def timeout(data):
     request_data = data
 
     if not request_data:
-        socketio.emit('response', {"error": "No data provided"}, 400)
+        socketio.emit('response', {"error": "No data provided"})
         return
 
     board = request_data.get("board")
     turn = request_data.get("turn")
 
     if board is None or turn is None:
-        socketio.emit('response', {"error": "Invalid data format"}, 400)
+        socketio.emit('response', {"error": "Invalid data format"})
         return
 
     state = ConnectFourBoard(board)
