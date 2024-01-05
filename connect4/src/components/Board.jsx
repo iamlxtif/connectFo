@@ -10,9 +10,9 @@ function Board(props) {
 
   const renderCell = (cellValue, colIndex) => {
     const discColor =
-      cellValue === "X"
+      cellValue === 1
         ? "#AB2328"
-        : cellValue === "O"
+        : cellValue === -1
         ? "#23395d"
         : "#FFFFFF10";
 
@@ -25,7 +25,7 @@ function Board(props) {
           backgroundColor: discColor,
           borderRadius: "50%",
           margin: "auto",
-          ...((colIndex === hoveredColumn && cellValue !== "X" && cellValue !== "O") && {
+          ...((colIndex === hoveredColumn && cellValue !== 1 && cellValue !== -1) && {
             backgroundColor: "#C3073F30", // Change to the desired column hover color
           }),
         }}
