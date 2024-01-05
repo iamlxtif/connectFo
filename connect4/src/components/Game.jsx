@@ -93,7 +93,7 @@ function Game(props) {
   };
 
   const handleAiMove = async () => {
-    if (props.socket) {
+    if (props.socket && Running) {
       await delay(1000);
       console.log("bot use board:", response.board);
       props.socket.emit("play_event", {
@@ -105,9 +105,6 @@ function Game(props) {
     }
   };
   const Start = () => {
-    if (mode === 2) {
-      handleAiMove();
-    } else if (player === -1) handleAiMove();
     setshowStart(false);
     startTimer();
   };
@@ -145,6 +142,14 @@ function Game(props) {
       }
     }
   }, [Running, timeLeft]);
+
+  useEffect(() => {
+    if (Running) {
+      if (mode === 2) {
+        handleAiMove();
+      } else if (player === -1) handleAiMove();
+    }
+  }, [Running]);
 
   const handleTurnEnd = () => {
     const messages = ["Time's up!", "Out of time!"];

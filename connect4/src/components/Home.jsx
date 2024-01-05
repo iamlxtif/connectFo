@@ -35,7 +35,7 @@ function Home() {
             boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.5)", // Shadow effect
             borderRadius: "8px", // Optional: Adds rounded corners
             outline: "none", // Optional: Remove default outline
-            maxWidth: { xs: "100%", md: "100%" }, // Optional: Limit maximum width
+            maxWidth: { xs: "50%", md: "30%" }, // Optional: Limit maximum width
             maxHeight: "max-content", // Optional: Limit maximum height
             margin: "auto", // Center horizontally and vertically
             padding: "20px", // Optional: Add padding
@@ -50,7 +50,6 @@ function Home() {
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
-              width: "100vw",
             }}
           >
             <Grid item>
@@ -60,8 +59,11 @@ function Home() {
                 sx={{
                   fontSize: { xs: "0.8rem", md: "0.8rem" },
                   textAlign: "center",
+                  border: "none",
+                  borderRadius: '0',
                   "&:hover": {
-                    border: "1px solid #C3073F",
+                    transition: "all 0.2s ease-in-out",
+                    background: '#FFFFFF08'
                   }
                 }}
               >
@@ -76,8 +78,11 @@ function Home() {
                 sx={{
                   fontSize: { xs: "0.8rem", md: "0.8rem" },
                   textAlign: "center",
+                  border: "none",
+                  borderRadius: '0',
                   "&:hover": {
-                    border: "1px solid #C3073F",
+                    transition: "all 0.2s ease-in-out",
+                    background: '#FFFFFF08'
                   }
                 }}
               >
