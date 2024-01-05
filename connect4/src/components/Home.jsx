@@ -60,6 +60,9 @@ function Home() {
                 sx={{
                   fontSize: { xs: "0.8rem", md: "0.8rem" },
                   textAlign: "center",
+                  "&:hover": {
+                    border: "1px solid #C3073F",
+                  }
                 }}
               >
                 You play first
@@ -73,6 +76,9 @@ function Home() {
                 sx={{
                   fontSize: { xs: "0.8rem", md: "0.8rem" },
                   textAlign: "center",
+                  "&:hover": {
+                    border: "1px solid #C3073F",
+                  }
                 }}
               >
                 AI bot play first

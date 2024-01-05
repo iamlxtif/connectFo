@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { useRef, useEffect } from "react";
+import { useEffect } from "react";
 import Board from "./Board";
 import { Grid, Box, Typography, Modal, Button } from "@mui/material";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { CustomButton } from "../components/Theme";
-import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Link } from "react-router-dom";
 
 function Game(props) {
   //const [board, setBoard] = useState(Array(6).fill(Array(7).fill(0)));
@@ -26,15 +27,15 @@ function Game(props) {
   const [showStart, setshowStart] = useState(true);
 
   useEffect(() => {
-      props.socket.on("response", (data) => {
-        const newResponse = {
-          gameState: data.GameState,
-          board: data.board,
-          returned: true,
-        };
-        setResponse(newResponse);
-        console.log("response : ");
-      });
+    props.socket.on("response", (data) => {
+      const newResponse = {
+        gameState: data.GameState,
+        board: data.board,
+        returned: true,
+      };
+      setResponse(newResponse);
+      console.log("response : ");
+    });
   }, [props.socket]);
 
   useEffect(() => {
@@ -53,7 +54,7 @@ function Game(props) {
         return;
       }
       //console.log("Updated board:", response.board);
-      setPlayer(player*-1);
+      setPlayer(player * -1);
     }
   }, [response]);
 
@@ -72,7 +73,7 @@ function Game(props) {
         returned: false,
       };
       setResponse(newResponse);
-      if ((mode === 2 || (mode === 1 && player === -1 )) && Running) {
+      if ((mode === 2 || (mode === 1 && player === -1)) && Running) {
         handleAiMove();
       }
     }
@@ -103,13 +104,13 @@ function Game(props) {
       });
     }
   };
-  const Start = () =>{
+  const Start = () => {
     if (mode === 2) {
       handleAiMove();
     } else if (player === -1) handleAiMove();
-      setshowStart(false);
-      setRunning(true);
-  }
+    setshowStart(false);
+    startTimer();
+  };
   const delay = (milliseconds) => {
     return new Promise((resolve) => {
       setTimeout(resolve, milliseconds);
@@ -124,7 +125,7 @@ function Game(props) {
     setResponse(newResponse);
     setPlayer(props.player);
     setTimeLeft(30);
-    setRunning(false);
+    stopTimer();
     setshowStart(true);
   };
   const stopTimer = () => {
@@ -133,7 +134,8 @@ function Game(props) {
   const startTimer = () => {
     setRunning(true);
   };
-  useEffect(() => { // Timer inc and time out
+  useEffect(() => {
+    // Timer inc and time out
     if (Running) {
       if (timeLeft > 0) {
         const timer = setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
@@ -168,6 +170,21 @@ function Game(props) {
         height: "100vh",
       }}
     >
+      <Box component={Link} to={"/"}>
+        <ArrowBackIcon
+          sx={{
+            position: "absolute",
+            top: 5,
+            left: 5,
+            padding: "10px",
+            color: "white",
+            "&:hover": {
+              transition: "all 0.5s ease-in-out",
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+            },
+          }}
+        />
+      </Box>
       <p className="text-light">Time left: {timeLeft} seconds</p>
       <Grid
         container
@@ -189,7 +206,7 @@ function Game(props) {
                 width: { md: "9rem", sm: "8rem", xs: "6rem" },
                 height: { md: "3.5rem", sm: "3rem", xs: "2.6rem" },
               }}
-              onClick={() => {Start()}}
+              onClick={Start}
             >
               <PlayArrowIcon fontSize="medium" />
               <Typography
@@ -234,15 +251,15 @@ function Game(props) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "rgba(0, 0, 0, 0.6)", // Black background with transparency
-          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.5)", // Shadow effect
-          borderRadius: "8px", // Optional: Adds rounded corners
-          outline: "none", // Optional: Remove default outline
-          maxWidth: { xs: "50%", md: "25%" }, // Optional: Limit maximum width
-          maxHeight: "25%", // Optional: Limit maximum height
-          margin: "auto", // Center horizontally and vertically
-          padding: "20px", // Optional: Add padding
-          overflow: "auto", // Enable scrolling if content overflows
+          backgroundColor: "rgba(0, 0, 0, 0.6)", 
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.5)", 
+          borderRadius: "8px", 
+          outline: "none", 
+          maxWidth: { xs: "50%", md: "25%" }, 
+          maxHeight: "25%", 
+          margin: "auto", 
+          padding: "20px", 
+          overflow: "auto", 
         }}
       >
         <div className="winner-modal">
