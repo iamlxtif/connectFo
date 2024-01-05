@@ -26,7 +26,6 @@ function Game(props) {
   const [showStart, setshowStart] = useState(true);
 
   useEffect(() => {
-    if (response.returned) {
       props.socket.on("response", (data) => {
         const newResponse = {
           gameState: data.GameState,
@@ -36,7 +35,6 @@ function Game(props) {
         setResponse(newResponse);
         console.log("response : ");
       });
-    }
   }, [props.socket]);
 
   useEffect(() => {
