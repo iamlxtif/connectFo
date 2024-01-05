@@ -72,10 +72,10 @@ def timeout(data):
 
 def getGameState(state,turn):
     if state.gameOver(turn):
-        if state.Tie():
-            return 2
-        else :
+        if state.win(turn):
             return turn
+        else :
+            return 2
 
 @socketio.on("disconnect")
 def disconnected():

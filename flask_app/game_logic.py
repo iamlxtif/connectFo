@@ -7,6 +7,7 @@ import math
 from random import random
 from random import randint
 import time
+import random
 
 MAX = +1 
 MIN = -1
@@ -196,17 +197,18 @@ class ConnectFourBoard :
             if find: return i
             else :return -1
         else : return -2  
-# MNTC
+# MCTS
 class Node:
-    def __init__(self, state):
+    def __init__(self, state, parent=None):
         self.state = state
+        self.parent = parent
         self.children = []
         self.visits = 0
         self.value = 0
 
-    def expand(self,piece):
-        for successor in self.state.getPossibleMoves(piece):
-            child_node = Node(successor)
+    def expand(self, successors):
+        for successor in successors:
+            child_node = Node(successor, parent=self)
             self.children.append(child_node)
 
     def ucb1(self, total_visits):
@@ -219,8 +221,8 @@ class Node:
     def select_child(self):
         total_visits = sum(child.visits for child in self.children)
         best_child = max(self.children, key=lambda child: child.ucb1(total_visits))
-        return best_child       
-       
+        return best_child
+    
 class Play:
     DepthLim = 1
     @staticmethod
@@ -244,7 +246,7 @@ class Play:
 
     @staticmethod
     def computerTurn1(state) :
-        NextAction , _ = Play.minimaxAlphaBetaPruning(state,Play.DepthLim,-inf,+inf,MAX,3)
+        NextAction = Play.mcts(state)
         print(NextAction)
         return NextAction
     
@@ -316,38 +318,62 @@ class Play:
             return state.NextAction , state.value
         else:
             return state.Action,state.value    
-    # MNTC
-    @staticmethod    
-    def mcts(root_state, num_simulations=1000, piece=MAX):
+    # MCTS
+    @staticmethod
+    def mcts(root_state, num_simulations=1000):
         root = Node(root_state)
 
         for _ in range(num_simulations):
             node = root
-            while node.children:
+            state = deepcopy(root_state)  # Create a deepcopy for simulation
+
+            # Selection: Traverse the tree using UCB1 until reaching an unvisited node or a terminal node.
+            while not state.gameOver(state.piece):
+                if not node.children:
+                    break  # If leaf node is reached, break out
                 node = node.select_child()
+                action = node.state.Action
+                state.makeMove(action[0], action[1], state.piece)
+                state.piece *= -1
 
-            if node.visits == 0:
-                node.expand(piece)
+            # Expansion: If the node is unvisited and not terminal, expand it.
+            if not node.children and not state.gameOver(state.piece):
+                successors = state.getPossibleMoves(state.piece)
+                node.expand(successors)
+                node = node.select_child()
+                action = node.state.Action
+                state.makeMove(action[0], action[1], state.piece)
+                state.piece *= -1
 
-            result = Play.simulate_random_play(node.state)
+            # Simulation: Simulate random play from the current state until reaching a terminal state.
+            while not state.gameOver(state.piece):
+                successors = state.getPossibleMoves(state.piece)
+                if not successors:
+                    break
+                random_successor = random.choice(successors)
+                state = deepcopy(random_successor)
+                state.piece *= -1
+
+            # Backpropagation: Update values and visit counts
+            result = state.heuristicEval1(state.piece)  # Use a heuristic to evaluate the leaf node
             Play.backpropagate(node, result)
 
-        best_action = max(root.children, key=lambda child: child.visits).state.last_action
-        return best_action
-
-    @staticmethod
-    def simulate_random_play(state):
-        while not state.is_terminal():
-            action = random.choice(state.getPossibleMoves())
-            state = state.performMove(action)
-        return state.getReward()
+        best_action_node = max(root.children, key=lambda child: child.visits)
+        return best_action_node.state.Action
 
     @staticmethod
     def backpropagate(node, result):
         while node:
             node.visits += 1
             node.value += result
-            node = node.parent  
+            node = node.parent
+
+    @staticmethod
+    def backpropagate(node, result):
+        while node:
+            node.visits += 1
+            node.value += result
+            node = node.parent
 
 def main():
     playing = True
