@@ -1,10 +1,12 @@
-import React from 'react';
-import { Grid, Typography, Box } from "@mui/material";
+import React, { useState } from "react";
+import { Grid, Typography, Box, Modal } from "@mui/material";
 import { Link } from "react-router-dom";
 import "../fonts/fonts.css";
 import { CustomButton } from "../components/Theme";
 
 function Home() {
+  const [showModal, setShowModal] = useState(false);
+
   return (
     <>
       <Box
@@ -18,6 +20,66 @@ function Home() {
           height: "100vh",
         }}
       >
+        <Modal
+          open={showModal}
+          onClose={() => {
+            setShowModal(false);
+          }}
+          aria-labelledby="winner-modal"
+          aria-describedby="winner-modal-description"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.6)", // Black background with transparency
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.5)", // Shadow effect
+            borderRadius: "8px", // Optional: Adds rounded corners
+            outline: "none", // Optional: Remove default outline
+            maxWidth: { xs: "50%", md: "25%" }, // Optional: Limit maximum width
+            maxHeight: "25%", // Optional: Limit maximum height
+            margin: "auto", // Center horizontally and vertically
+            padding: "20px", // Optional: Add padding
+            overflow: "auto", // Enable scrolling if content overflows
+          }}
+        >
+          <Grid
+            container
+            spacing={2}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100vw",
+            }}
+          >
+            <Grid item>
+              <CustomButton
+                component={Link}
+                to="/humanfirst"
+                sx={{
+                  fontSize: { xs: "0.8rem", md: "0.8rem" },
+                  textAlign: "center",
+                }}
+              >
+                You play first
+              </CustomButton>
+            </Grid>
+
+            <Grid item>
+              <CustomButton
+                component={Link}
+                to="/botfirst"
+                sx={{
+                  fontSize: { xs: "0.8rem", md: "0.8rem" },
+                  textAlign: "center",
+                }}
+              >
+                AI bot play first
+              </CustomButton>
+            </Grid>
+          </Grid>
+        </Modal>
         <Box
           sx={{
             display: "flex",
@@ -73,8 +135,7 @@ function Home() {
             }}
           >
             <CustomButton
-              component={Link}
-              to='/human'
+              onClick={() => setShowModal(true)}
               sx={{
                 fontSize: { xs: "0.8rem", md: "1.2rem" },
                 "&:hover": {
@@ -98,7 +159,7 @@ function Home() {
           >
             <CustomButton
               component={Link}
-              to='/bots'
+              to="/bots"
               sx={{
                 fontSize: { xs: "0.8rem", md: "1.2rem" },
                 "&:hover": {

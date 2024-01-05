@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useRef, useEffect } from "react";
 import Board from "./Board";
-import { Grid, Box, Typography, Modal } from "@mui/material";
+import { Grid, Box, Typography, Modal, Button } from "@mui/material";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { CustomButton } from "../components/Theme";
 import PauseIcon from "@mui/icons-material/Pause";
@@ -9,9 +9,9 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 
 function Game(props) {
   //const [board, setBoard] = useState(Array(6).fill(Array(7).fill(0)));
-  const [player, setPlayer] = useState(1);
+  const [player, setPlayer] = useState(props.player);
   const [timeLeft, setTimeLeft] = useState(30);
-  const [Running, setRunning] = useState(true);
+  const [Running, setRunning] = useState(false);
   const mode = props.mode;
   //const [gameState, setGameState] = useState(0);
   const [err, setErr] = useState(0);
@@ -23,6 +23,7 @@ function Game(props) {
     board: Array(6).fill(Array(7).fill(0)),
     returned: false,
   });
+  const [showStart, setshowStart] = useState(true);
 
   useEffect(() => {
     props.socket.on("response", (data) => {
@@ -71,9 +72,9 @@ function Game(props) {
         returned: false,
       };
       setResponse(newResponse);
-      if (player === -1) {
+      if (player === -1 && mode === 1 && Running) {
         handleAiMove();
-      }
+      } else if (mode === 2 && Running) handleAiMove();
     }
   }, [timeLeft]);
 
@@ -84,7 +85,7 @@ function Game(props) {
   };
 
   const handleMove = (col) => {
-    if (mode === 1 && player === 1 && props.socket) {
+    if (mode === 1 && player === 1 && props.socket && Running) {
       console.log("you use board:", response.board);
       props.socket.emit("play_event", {
         board: response.board,
@@ -96,8 +97,9 @@ function Game(props) {
     }
   };
 
-  const handleAiMove = () => {
+  const handleAiMove = async () => {
     if (props.socket) {
+      await delay(2000);
       console.log("bot use board:", response.board);
       props.socket.emit("play_event", {
         board: response.board,
@@ -106,13 +108,6 @@ function Game(props) {
         play_col: -1, // -1 if AI turn else humen selection
       });
     }
-  };
-
-  const handleAiMode = () => {
-    // if mode ai vs ai
-    // while gameState == 0
-    // handleAiMove
-    // wait
   };
 
   const restart = () => {
@@ -124,7 +119,8 @@ function Game(props) {
     setResponse(newResponse);
     setPlayer(1);
     setTimeLeft(30);
-    setRunning(true);
+    setRunning(false);
+    setshowStart(true);
   };
   const stopTimer = () => {
     setRunning(false);
@@ -150,7 +146,14 @@ function Game(props) {
     // update
     // check gameState
     // send bot request
-    setPlayer(player === 1 ? -1 : 1);
+    if (props.socket) {
+      props.socket.emit("timeout_event", {
+        board: response.board,
+        turn: player, // 1 or -1
+        mode: mode, // 1 or 2
+        play_col: -1, // -1 if AI turn else humen selection
+      });
+    }
   };
   return (
     <Box
@@ -174,8 +177,8 @@ function Game(props) {
           alignItems: "center",
         }}
       >
-        <Grid item>
-          {Running ? (
+        {showStart && (
+          <Grid item>
             <CustomButton
               sx={{
                 display: "flex",
@@ -185,36 +188,23 @@ function Game(props) {
                 width: { md: "9rem", sm: "8rem", xs: "6rem" },
                 height: { md: "3.5rem", sm: "3rem", xs: "2.6rem" },
               }}
-              onClick={stopTimer}
-            >
-              <PauseIcon fontSize="medium" />
-              <Typography
-                sx={{ fontSize: { xs: "0.6rem", sm: "0.8rem", md: "1rem" } }}
-              >
-                Pause
-              </Typography>
-            </CustomButton>
-          ) : (
-            <CustomButton
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                width: { md: "9rem", sm: "8rem", xs: "6rem" },
-                height: { md: "3.5rem", sm: "3rem", xs: "2.6rem" },
+              onClick={() => {
+                if (mode === 2) {
+                  handleAiMove();
+                } else if (player === -1) handleAiMove();
+                setshowStart(false);
+                setRunning(true);
               }}
-              onClick={startTimer}
             >
               <PlayArrowIcon fontSize="medium" />
               <Typography
                 sx={{ fontSize: { xs: "0.6rem", sm: "0.8rem", md: "1rem" } }}
               >
-                Back
+                Start
               </Typography>
             </CustomButton>
-          )}
-        </Grid>
+          </Grid>
+        )}
         <Grid item>
           <CustomButton
             sx={{
@@ -245,6 +235,20 @@ function Game(props) {
         }}
         aria-labelledby="winner-modal"
         aria-describedby="winner-modal-description"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "rgba(0, 0, 0, 0.6)", // Black background with transparency
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.5)", // Shadow effect
+          borderRadius: "8px", // Optional: Adds rounded corners
+          outline: "none", // Optional: Remove default outline
+          maxWidth: { xs: "50%", md: "25%" }, // Optional: Limit maximum width
+          maxHeight: "25%", // Optional: Limit maximum height
+          margin: "auto", // Center horizontally and vertically
+          padding: "20px", // Optional: Add padding
+          overflow: "auto", // Enable scrolling if content overflows
+        }}
       >
         <div className="winner-modal">
           {!tie && <h2 id="winner-modal">Player {winner} wins!</h2>}

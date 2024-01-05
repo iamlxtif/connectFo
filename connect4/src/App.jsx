@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
-import { BrowserRouter as Router,Route,Routes } from 'react-router-dom';
-import './fonts/fonts.css';
-import './App.css';
-import Home from './components/Home'
-import Game from './components/Game'
-import Loading from './components/Loading'
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import "./fonts/fonts.css";
+import "./App.css";
+import Home from "./components/Home";
+import Game from "./components/Game";
+import Loading from "./components/Loading";
 import io from "socket.io-client";
 
 function App() {
@@ -16,7 +16,6 @@ function App() {
     const socket = io("http://localhost:5000");
     setLoaded(true);
     setSocketInstance(socket);
-
 
     return () => {
       // Disconnect socket when component unmounts
@@ -31,8 +30,18 @@ function App() {
           <Router>
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/human" element={<Game mode={1} socket={socketInstance} />}/>
-              <Route path="/bots" element={<Game mode={2} socket={socketInstance} />}/>
+              <Route
+                path="/humanfirst"
+                element={<Game mode={1} socket={socketInstance} player={1} />}
+              />
+              <Route
+                path="/botfirst"
+                element={<Game mode={1} socket={socketInstance} player={-1} />}
+              />
+              <Route
+                path="/bots"
+                element={<Game mode={2} socket={socketInstance} />}
+              />
             </Routes>
           </Router>
         </>
