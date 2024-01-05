@@ -40,7 +40,7 @@ function App() {
               />
               <Route
                 path="/bots"
-                element={<Game mode={2} socket={socketInstance} />}
+                element={<Game mode={2} socket={socketInstance} player={1} />}
               />
             </Routes>
           </Router>
