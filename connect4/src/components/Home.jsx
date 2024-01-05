@@ -31,12 +31,12 @@ function Home() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: "rgba(0, 0, 0, 0.6)", // Black background with transparency
+            backgroundColor: "#0d0d0e", // Black background with transparency
             boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.5)", // Shadow effect
             borderRadius: "8px", // Optional: Adds rounded corners
             outline: "none", // Optional: Remove default outline
-            maxWidth: { xs: "50%", md: "25%" }, // Optional: Limit maximum width
-            maxHeight: "25%", // Optional: Limit maximum height
+            maxWidth: { xs: "100%", md: "100%" }, // Optional: Limit maximum width
+            maxHeight: "max-content", // Optional: Limit maximum height
             margin: "auto", // Center horizontally and vertically
             padding: "20px", // Optional: Add padding
             overflow: "auto", // Enable scrolling if content overflows
