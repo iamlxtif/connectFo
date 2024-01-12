@@ -9,12 +9,10 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Link } from "react-router-dom";
 
 function Game(props) {
-  //const [board, setBoard] = useState(Array(6).fill(Array(7).fill(0)));
   const [player, setPlayer] = useState(props.player);
   const [timeLeft, setTimeLeft] = useState(30);
   const [Running, setRunning] = useState(false);
   const mode = props.mode;
-  //const [gameState, setGameState] = useState(0);
   const [err, setErr] = useState(0);
   const [showWinnerModal, setShowWinnerModal] = useState(false);
   const [winner, setWinner] = useState(null);
@@ -22,7 +20,6 @@ function Game(props) {
   const [response, setResponse] = useState({
     gameState: 0,
     board: Array(6).fill(Array(7).fill(0)),
-    //err: null,
     returned: false,
   });
   const [showStart, setshowStart] = useState(true);
@@ -36,8 +33,8 @@ function Game(props) {
           returned: true,
         };
         setResponse(newResponse);
-        console.log("response : ");
-       } else alert('colom is full');
+        console.log("response : "+data);
+       } else alert('choose another column');
     });
   }, [props.socket]);
 
