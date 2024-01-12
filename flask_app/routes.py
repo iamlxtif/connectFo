@@ -33,7 +33,7 @@ def play(data):
         if turn == 1:
             play_row , err = Play.humanTurn2(state, play_col)
         elif turn == -1:
-            play_row , play_col = Play.computerTurn2(state)
+            play_row , play_col = Play.computerTurn1(state)
     else:
         if turn == 1:
             play_row , play_col = Play.computerTurn1(state)

@@ -22,6 +22,7 @@ function Game(props) {
   const [response, setResponse] = useState({
     gameState: 0,
     board: Array(6).fill(Array(7).fill(0)),
+    //err: null,
     returned: false,
   });
   const [showStart, setshowStart] = useState(true);
