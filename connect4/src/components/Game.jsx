@@ -28,13 +28,15 @@ function Game(props) {
 
   useEffect(() => {
     props.socket.on("response", (data) => {
-      const newResponse = {
-        gameState: data.GameState,
-        board: data.board,
-        returned: true,
-      };
-      setResponse(newResponse);
-      console.log("response : ");
+      if(data.Err === 0 ){
+        const newResponse = {
+          gameState: data.GameState,
+          board: data.board,
+          returned: true,
+        };
+        setResponse(newResponse);
+        console.log("response : ");
+       } else alert('colom is full');
     });
   }, [props.socket]);
 
